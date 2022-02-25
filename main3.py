@@ -8,6 +8,7 @@ from web3 import Web3, HTTPProvider
 
 out = []
 CONNECTIONS = 100
+
 TIMEOUT = 5000
 
 urls = []
@@ -30,7 +31,7 @@ nfts = []
 
 id = 0
 
-count = 10000
+count = 100
 
 w3 = Web3(HTTPProvider('https://rpc.ftm.tools'))
 
@@ -206,8 +207,14 @@ for nft in nfts:
 
     if (name in left_and_right_same):
         total_rarity += count / left_and_right_same_count
+        # add the rarity of the attribute to nft in df
+        nft[1].append({'trait_type': 'Left Right Same', 'value': True})
+    else:
+        nft[1].append({'trait_type': 'Left Right Same', 'value': False})
 
     nft[3] = total_rarity
+
+# added Left Right Same in attribute lists
 
 print(attributes_rarity)
 
@@ -238,6 +245,12 @@ for x in attributes_types:
             'multiplier': 1
         }, ignore_index=True)
 
+attributes_types_df = attributes_types_df.append(
+    {
+        'trait_type': 'Left Right Same',
+        'multiplier': 1
+    }, ignore_index=True)
+
 print(attributes_types_df)
 
 # %%
@@ -267,8 +280,26 @@ for x in attributes:
             },
             ignore_index=True)
 
+attributes_values_df = attributes_values_df.append(
+    {
+        'trait_type': 'Left Right Same',
+        'value': 'None',
+        'multiplier': 1,
+        'rarity': 0
+    },
+    ignore_index=True)
+
+attributes_values_df = attributes_values_df.append(
+    {
+        'trait_type': 'Left Right Same',
+        'value': True,
+        'multiplier': 1,
+        'rarity': count / left_and_right_same_count
+    },
+    ignore_index=True)
+
 print(attributes_values_df)
 
-attributes_values_df.to_csv('.data/attributes_values_meta.csv', index=False)
+attributes_values_df.to_csv('./data/attributes_values_meta.csv', index=False)
 
 # %%
