@@ -1,3 +1,4 @@
+# %%
 import concurrent.futures
 import requests
 import pandas as pd
@@ -131,7 +132,8 @@ with concurrent.futures.ThreadPoolExecutor(
 print(f'Took {time2-time1:.2f} s')
 
 #  convert nfts list to dataframe
-nft_df = pd.DataFrame(nfts, columns=['name', 'attributes','image', 'rarity score'])
+nft_df = pd.DataFrame(nfts,
+                      columns=['name', 'attributes', 'image', 'rarity score'])
 
 #  drop the first column
 # nft_df = nft_df.drop(nft_df.columns[0], axis=1)
@@ -179,7 +181,10 @@ for nft in nfts:
 
         if found_flag == False:
             # print("not found",attribute)
+
             total_rarity += attributes_rarity['None' + ' ' + atr['trait_type']]
+            #  add the rarity of the attribute to nft in df
+            nft[1].append({'trait_type': attribute, 'value': 'None'})
 
     for x in nft[1]:
         # print(x)
@@ -204,11 +209,66 @@ for nft in nfts:
 
     nft[3] = total_rarity
 
-# print(attributes_rarity)
+print(attributes_rarity)
+
+print(attributes_types)
 
 nft_df = pd.DataFrame(nfts,
                       columns=['name', 'attributes', 'image', 'rarity score'])
 
 nft_df.sort_values(by=['rarity score'], ascending=False, inplace=True)
 
-nft_df.to_csv('data.csv', index=False)
+nft_df.reset_index(inplace=True)
+
+nft_df.drop(nft_df.columns[0], axis=1, inplace=True)
+
+nft_df['rank'] = nft_df.index + 1
+
+nft_df.to_csv('./data/data.csv', index=False)
+
+#  save all the trait types to a csv with multiplier set to 1 for each
+
+# %%
+attributes_types_df = pd.DataFrame([], columns=['trait_type', 'multiplier'])
+
+for x in attributes_types:
+    attributes_types_df = attributes_types_df.append(
+        {
+            'trait_type': x,
+            'multiplier': 1
+        }, ignore_index=True)
+
+print(attributes_types_df)
+
+# %%
+
+# save attributes_types_df to csv sheet 2
+
+attributes_types_df.to_csv('./data/attributes_types_meta.csv', index=False)
+
+# %%
+
+# save all attributes value with multipler and trait type
+
+attributes_values_df = pd.DataFrame(
+    [], columns=['trait_type', 'value', 'multiplier', 'rarity'])
+
+for x in attributes:
+    for y in attributes[x]:
+
+        rarity = attributes_rarity[y + ' ' + x]
+
+        attributes_values_df = attributes_values_df.append(
+            {
+                'trait_type': x,
+                'value': y,
+                'multiplier': 1,
+                'rarity': rarity
+            },
+            ignore_index=True)
+
+print(attributes_values_df)
+
+attributes_values_df.to_csv('.data/attributes_values_meta.csv', index=False)
+
+# %%
