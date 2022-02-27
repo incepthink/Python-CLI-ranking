@@ -55,8 +55,8 @@ for index, row in attribute_type_df.iterrows():
 
 for index, row in attribute_values_df.iterrows():
 
-    attribute_mutliplier = float(attributes_types[
-        row['trait_type']]) if row['trait_type'] in attributes_types else 1
+    attribute_mutliplier = float(attributes_types[row['trait_type']]) if row[
+        'trait_type'] in attributes_types and row['value'] != 'None' else 1
 
     attributes_rarity[
         str(row['trait_type'] + '_' + str(row['value'])
@@ -91,8 +91,6 @@ for index, row in nft_df.iterrows():
 nft_df.sort_values(by=['rarity score'], inplace=True, ascending=False)
 
 nft_df.reset_index(drop=True, inplace=True)
-
-
 
 nft_df['rank'] = nft_df.index + 1
 

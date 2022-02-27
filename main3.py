@@ -35,7 +35,7 @@ id = 0
 
 count = 0
 
-true_count = 100
+true_count = 1000
 
 w3 = Web3(HTTPProvider('https://rpc.ftm.tools'))
 
