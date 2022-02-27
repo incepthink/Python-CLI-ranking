@@ -27,11 +27,15 @@ left_and_right_same = {}
 
 left_and_right_same_count = 0
 
+none_attributes = {}
+
 nfts = []
 
 id = 0
 
-count = 100
+count = 0
+
+true_count = 100
 
 w3 = Web3(HTTPProvider('https://rpc.ftm.tools'))
 
@@ -46,7 +50,7 @@ contractCaller = w3.eth.contract(address=address, abi=abi)
 
 # print(contractCaller.functions.ownerOf(8787).call())
 
-for i in range(1, count + 1):
+for i in range(1, true_count + 1):
     # print('Page:', i)
     url = "https://incepthink.mypinata.cloud/ipfs/Qmc2K93S1RgQ17vxWy31LXbaN498vq4XhzT8ux6hJGgvtC/" + str(
         i)
@@ -110,6 +114,10 @@ def load_url(url, timeout):
             left_and_right_same[data['name']] = left_item
             left_and_right_same_count = left_and_right_same_count + 1
 
+        global count
+        count = count + 1
+        
+
     except Exception as e:
         print(e, "Over here")
 
@@ -169,6 +177,10 @@ for attribute in attributes:
         'None' + ' ' +
         attribute] = count / count_for_no_value if count_for_no_value != 0 else 0
 
+    attributes[attribute].add('None')
+
+    # none_attributes[attribute] = 'None'
+
 for nft in nfts:
     # print(nft)
     total_rarity = 0
@@ -216,6 +228,10 @@ for nft in nfts:
 
 # added Left Right Same in attribute lists
 
+# add none attributes to attributes list
+
+# attributes.update(none_attributes)
+
 print(attributes_rarity)
 
 print(attributes_types)
@@ -234,6 +250,11 @@ nft_df['rank'] = nft_df.index + 1
 nft_df.to_csv('./data/data.csv', index=False)
 
 #  save all the trait types to a csv with multiplier set to 1 for each
+
+# %%
+# print(attributes)
+
+# print(attributes['Race'])
 
 # %%
 attributes_types_df = pd.DataFrame([], columns=['trait_type', 'multiplier'])

@@ -96,7 +96,7 @@ nft_df.reset_index(drop=True, inplace=True)
 
 nft_df['rank'] = nft_df.index + 1
 
-nft_df.drop(columns=['index'], inplace=True)
+# nft_df.drop(columns=['index'], inplace=True)
 
 nft_df.to_csv('./data/data.csv', index=False)
 # %%
